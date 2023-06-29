@@ -31,7 +31,7 @@ def load_css(file_path):
 
 
 # Load CSS file
-load_css('styles2.css')
+# load_css('styles2.css')
 
 
 # ----- FUNCTIONS ----
