@@ -1,4 +1,7 @@
 <p align="center">
-  <img src="https://github.com/OdiaGenAI/Olive_Scrapper/blob/main/olive_webscrapping.jpg" alt="Avatar" style="width:200px; border-radius: 50%">
+  <img src="https://github.com/OdiaGenAI/Olive_Scrapper/blob/main/olive_webscrapping.jpg" alt="Avatar" height="auto" width="200" style="border-radius:50%">
 </p>
-<h3 style="text-align:center">Olive Scrapper</h3>
+
+<p align="center">
+  <h3>Olive Scrapper</h3>
+</p>
