@@ -1,11 +1,11 @@
-FROM python:3.8.9
+FROM python:3.8-slim-buster
 
 WORKDIR /app
 
 COPY ./requirements.txt /app/requirements.txt
-COPY ./packages.txt /app/packages.txt
+# COPY ./packages.txt /app/packages.txt
 
-RUN apt-get update && xargs -r -a /app/packages.txt apt-get install -y && rm -rf /var/lib/apt/lists/*
+# RUN apt-get update && xargs -r -a /app/packages.txt apt-get install -y && rm -rf /var/lib/apt/lists/*
 RUN pip3 install --no-cache-dir -r /app/requirements.txt
 
 # User
