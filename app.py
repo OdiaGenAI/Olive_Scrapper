@@ -18,7 +18,7 @@ import os
 
 
 # ---- LOAD ASSETS ----
-img_page_icon = Image.open("images/web_icon.jpeg")
+img_page_icon = Image.open("./olive_webscrapping.jpg")
 
 # Find more emojis here: https://www.webfx.com/tools/emoji-cheat-sheet/
 st.set_page_config(page_title="OdiaGenAI ", page_icon=img_page_icon, layout="wide")
