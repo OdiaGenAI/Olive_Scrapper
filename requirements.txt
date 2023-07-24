@@ -6,3 +6,4 @@ pdfplumber
 justext
 Pillow
 requests
+lxml
