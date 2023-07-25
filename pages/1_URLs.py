@@ -125,7 +125,7 @@ sitemap_data = ""
 
 
 # function to process a batch of URLS in sitemaps
-def process_urls(sitemap_urls):
+def process_urls(sitemap_urls , category):
 
     extracted_txt = ""
     extracted_jsonl_list= []
@@ -135,7 +135,7 @@ def process_urls(sitemap_urls):
             # using justext to extract data
             temp_para = extract_data_from_url_(url)
             temp_txt_data = ('\n\nFrom url:' + url + '\n' + temp_para + '\n')
-            temp_jsonl_data = {"text": temp_para, "url": url}
+            temp_jsonl_data = {"text": temp_para, "url": url, "category": category, "timestamp": str(datetime.datetime.now())}
             extracted_txt += temp_txt_data
             extracted_jsonl_list.append(temp_jsonl_data)
         else:
@@ -150,7 +150,7 @@ def process_urls(sitemap_urls):
 
 
 # function to process for a single URL
-def run_function(url):
+def run_function(url , category):
     extracted_txt = ""
     # Check if the user has provided a URL
     if url:
@@ -158,7 +158,7 @@ def run_function(url):
             temp_para = extract_data_from_url_(url)
             temp_txt_data = ('\n\nFrom url:' + url + '\n' + temp_para + '\n')
             extracted_txt = temp_txt_data
-            extracted_jsonl = {"text": str(temp_para), "url":str(url)}
+            extracted_jsonl = {"text": str(temp_para), "url":str(url) , "category": category , "timestamp": str(datetime.datetime.now())}
 
             # displaying extracted txt for single URL
             st.text_area("Extracted Text", value=extracted_txt, height=200)
@@ -180,6 +180,10 @@ def run_function(url):
 def main():
     st.subheader("Extract Data from URLs")
 
+    category = st.selectbox(
+        'Select a Category',
+       ('News Articles','Poems','Magazines', 'Other') )
+    
     # dividing the body section into 2 columns for url and enter button
     col1, col2 = st.columns([0.7,0.3])
 
@@ -198,6 +202,8 @@ def main():
     if "extracted_url" not in st.session_state:
         st.session_state.extracted_url = False
     data = ""
+
+    
 
     # the enter button
     if st.session_state.button_enter_url:
@@ -240,7 +246,7 @@ def main():
                             start_index = i * split_size
                             end_index = start_index + split_size if i != num_threads - 1 else None
                             temp_urls = stored_sitemap_urls[start_index:end_index]
-                            future = executor.submit(process_urls, temp_urls)
+                            future = executor.submit(process_urls, temp_urls, category)
                             futures.append(future)
 
                         # Retrieve the extracted data from each thread
@@ -284,7 +290,7 @@ def main():
 
         else:
             url = url_or_xml
-            st.session_state.extracted_url, data_txt, data_jsonl = run_function(url)
+            st.session_state.extracted_url, data_txt, data_jsonl = run_function(url , category)
 
         
         if st.session_state.extracted_url:
@@ -355,13 +361,16 @@ def main():
             if saved_successfully:
                 # Confirmation message
                 st.success(f"File saved successfully.")
-
+            st.write("#")
+            st.write("#")
         else:
             st.warning("Data not extracted")
             if st.button("clear"):
                 st.session_state.button_enter_url = False
                 st.session_state.extracted_url = False
                 st.experimental_rerun()
+            st.write("#")
+            st.write("#")
 
 
     # Add a success message to the sidebar
