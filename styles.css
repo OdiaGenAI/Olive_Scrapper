@@ -1,4 +1,4 @@
-/* .title {
+.title {
     font-family: "Source Sans Pro", sans-serif;
     font-weight: 600;
     padding: 1.25rem 0px 1rem;
@@ -23,26 +23,9 @@
     font-size: 1.25pc;
     padding: 1.25rem 0px 1rem;
     margin: 0px;
-} */
+}
 
-/* enter button  */
-/* #root > div:nth-child(1) > div.withScreencast > div > div > div > section.main.css-rtltf8.egzxvld5 > div.block-container.css-1l97lnl.egzxvld4 > div:nth-child(1) > div > div:nth-child(3) > div.css-1bzkvni.e1tzin5v1 > div:nth-child(1) > div > div:nth-child(2) > div > button {
-    width: 100%;
-} */
 
 button.css-1oz26th.edgvbvh10 {
     width: 100% !important;
-}
-/* #root > div:nth-child(1) > div.withScreencast > div > div > div > section > div:nth-child(1) {
-    background-color: #3498db;
-    padding: 5px;
-} */
-
-/* #root > div:nth-child(1) > div.withScreencast > div > div > div > section.css-1cypcdb.e1fqkh3o11 > div.css-6qob1r.e1fqkh3o3 > div.css-1b9x38r.e1fqkh3o2 > button{
-    visibility: hidden;
-} */
-
-
-* {
-    background: green !important;
 }

@@ -9,6 +9,11 @@ import docx2txt
 import requests
 import pdfplumber
 
+# Load CSS file
+def load_css(file_path):
+    with open(file_path) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
 # function to run the enter button
 def run_function(documents):
     data = ""
@@ -74,11 +79,12 @@ def main():
         st.session_state.extracted_doc = False
     data = ""
 
-    
-    if st.button("Enter"):
-        st.session_state.button_enter_doc = True
-    
-    
+    enter_c1, enter_c2 = st.columns([0.5, 0.5])
+    with enter_c1:
+        if st.button("Enter"):
+            st.session_state.button_enter_doc = True
+    with enter_c2:
+        print()
 
     # the enter button
     if st.session_state.button_enter_doc:
@@ -115,12 +121,17 @@ def main():
                 st.success(f"File saved successfully.")
 
         else:
+            clear_c1, clear_c2 = st.columns([0.5, 0.5])
             st.warning("Data not extracted")
-            if st.button("clear"):
-                st.session_state.button_enter_doc = False
-                st.session_state.extracted_doc = False
-                st.experimental_rerun()
-            
+            with clear_c1:
+                if st.button("clear"):
+                    st.session_state.button_enter_doc = False
+                    st.session_state.extracted_doc = False
+                    st.experimental_rerun()
+            with clear_c2:
+                print()
+    st.write("#")
+    st.write("#")        
             
                 
 
