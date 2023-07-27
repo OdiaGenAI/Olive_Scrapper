@@ -30,8 +30,10 @@ def check_sitemap(url):
             # Parse the content as XML
             response = requests.get(url)
             xml_content = etree.fromstring(response.content)
+            soup = BeautifulSoup(response.text, 'xml')
+
             # Check for sitemap-specific elements
-            if xml_content.tag == 'urlset' or xml_content.tag == 'sitemapindex':
+            if soup.find_all('sitemap') or soup.find_all('urlset') or soup.find_all('sitemapindex'):
                 return True
         except Exception as e:
             st.error("Invalid sitemap!!")
@@ -40,9 +42,14 @@ def check_sitemap(url):
         try:
             response = requests.get(url)
             # Perform additional checks specific to the website's structure or naming conventions
-            return True
+            xml_content = etree.fromstring(response.content)
+            soup = BeautifulSoup(response.text, 'xml')
+
+            # Check for sitemap-specific elements
+            if soup.find_all('sitemap') or soup.find_all('urlset') or soup.find_all('sitemapindex'):
+                return True
         except Exception as e:
-            # st.error("Invalid sitemap!!")
+            st.error("Invalid sitemap!!")
             pass
 
     return False
