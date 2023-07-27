@@ -14,6 +14,9 @@ def load_css(file_path):
     with open(file_path) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
+# Load CSS file
+load_css('styles.css')
+
 # function to run the enter button
 def run_function(documents):
     data = ""
