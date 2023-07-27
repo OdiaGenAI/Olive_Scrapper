@@ -50,6 +50,11 @@
 
 <h2>Snapshots</h2>
 
+![Snapshot 1](olive_scrapper_snapshots/1.png)
+![Snapshot 2](olive_scrapper_snapshots/2.png)
+![Snapshot 3](olive_scrapper_snapshots/3.png)
+
+
 <p>Happy scraping!</p>
 
 
