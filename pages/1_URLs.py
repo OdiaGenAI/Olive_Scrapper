@@ -25,13 +25,17 @@ def check_sitemap(url):
             # Check for sitemap-specific elements
             if xml_content.tag == 'urlset' or xml_content.tag == 'sitemapindex':
                 return True
-        except etree.XMLSyntaxError:
-            pass
-
+        except Exception as e:
+            st.error("Invalid sitemap!!")
     # Additional conditions for identifying sitemaps
-    if 'sitemap' in url.lower():
-        # Perform additional checks specific to the website's structure or naming conventions
-        return True
+    elif 'sitemap' in url.lower():
+        try:
+            response = requests.get(url)
+            # Perform additional checks specific to the website's structure or naming conventions
+            return True
+        except Exception as e:
+            # st.error("Invalid sitemap!!")
+            pass
 
     return False
 
@@ -152,29 +156,35 @@ def process_urls(sitemap_urls , category):
 # function to process for a single URL
 def run_function(url , category):
     extracted_txt = ""
-    # Check if the user has provided a URL
-    if url:
-        if valid_url(url):
-            temp_para = extract_data_from_url_(url)
-            temp_txt_data = ('\n\nFrom url:' + url + '\n' + temp_para + '\n')
-            extracted_txt = temp_txt_data
-            extracted_jsonl = {"text": str(temp_para), "url":str(url) , "category": category , "timestamp": str(datetime.datetime.now())}
 
-            # displaying extracted txt for single URL
-            st.text_area("Extracted Text", value=extracted_txt, height=200)
-            
-            
-            extracted_jsonl = json.dumps(extracted_jsonl, ensure_ascii=False)
+    try:
+        response = requests.get(url)
+        # Check if the user has provided a URL
+        if url:
+            if valid_url(url):
+                temp_para = extract_data_from_url_(url)
+                temp_txt_data = ('\n\nFrom url:' + url + '\n' + temp_para + '\n')
+                extracted_txt = temp_txt_data
+                extracted_jsonl = {"text": str(temp_para), "url":str(url) , "category": category , "timestamp": str(datetime.datetime.now())}
 
-            # return extract status, and the data extracted
-            return True, extracted_txt, extracted_jsonl
+                # displaying extracted txt for single URL
+                st.text_area("Extracted Text", value=extracted_txt, height=200)
+                
+                
+                extracted_jsonl = json.dumps(extracted_jsonl, ensure_ascii=False)
+
+                # return extract status, and the data extracted
+                return True, extracted_txt, extracted_jsonl
+            else:
+                return False, None, None
         else:
+            st.error("Error: An error occurred while fetching content.")
+            # return extract status, and the data extracted
             return False, None, None
-    else:
-        st.error("Error: An error occurred while fetching content.")
-        # return extract status, and the data extracted
-        return False, None, None
+    except Exception as e:
+        st.error("Invalid URL")
     
+    return False, None, None
 
 
 def main():
@@ -314,23 +324,26 @@ def main():
                 save_as_json = st.checkbox("jsonl", value=False)
                 
             if not save_as_txt and not save_as_json:
-                if st.button("Clear"):
-                    st.session_state.button_enter_url = False
-                    st.session_state.Initial = True
-                    st.session_state.extracted_url = False
-                    if 'sitemap_data_text' in st.session_state:
-                        del st.session_state['sitemap_data_text']
-                    if 'sitemap_data_jsonl' in st.session_state:
-                        del st.session_state['sitemap_data_jsonl']
-                    st.session_state.button_enter_url = False
-                    st.experimental_rerun()
-            else:
+                clear_c1, clear_c2 = st.columns([0.5,0.5])
+                with clear_c1:
+                    if st.button("Clear"):
+                        st.session_state.button_enter_url = False
+                        st.session_state.Initial = True
+                        st.session_state.extracted_url = False
+                        if 'sitemap_data_text' in st.session_state:
+                            del st.session_state['sitemap_data_text']
+                        if 'sitemap_data_jsonl' in st.session_state:
+                            del st.session_state['sitemap_data_jsonl']
+                        st.session_state.button_enter_url = False
+                        st.experimental_rerun()
+                with clear_c2:
+                    print()
+            elif (save_as_txt and not save_as_json) or (save_as_json and not save_as_txt):
                 col1, col2 = st.columns([0.5, 0.5])
                 # save column
                 with col1:
                     
                     if is_a_sitemap:
-                        
                         if save_as_txt:
                             if st.download_button(label="Save as txt",data=st.session_state.sitemap_data_text ):
                                 saved_successfully = True
@@ -357,7 +370,34 @@ def main():
                             del st.session_state['sitemap_data_jsonl']
                         st.session_state.button_enter_url = False
                         st.experimental_rerun()
-
+            elif save_as_txt and save_as_json:
+                savetxt_c1,saveJson_c2,clear_c3 = st.columns([0.25,0.25,0.5])
+                with savetxt_c1:
+                    if is_a_sitemap:
+                        if st.download_button(label="Save as txt",data=st.session_state.sitemap_data_text ):
+                                saved_successfully = True
+                    else:            
+                        if st.download_button(label="Save as txt",data=data_txt ):
+                                saved_successfully = True
+                with saveJson_c2:
+                    if is_a_sitemap:
+                        if st.download_button(label="Save as jsonl", data=st.session_state.sitemap_data_jsonl, mime="application/json"):
+                                saved_successfully = True
+                    else:
+                        if save_as_json:
+                            if st.download_button(label="Save as jsonl", data=data_jsonl, mime="application/json"):
+                                saved_successfully = True
+                with clear_c3:
+                    if st.button("Clear"):
+                        st.session_state.button_enter_url = False
+                        st.session_state.Initial = True
+                        st.session_state.extracted_url = False
+                        if 'sitemap_data_text' in st.session_state:
+                            del st.session_state['sitemap_data_text']
+                        if 'sitemap_data_jsonl' in st.session_state:
+                            del st.session_state['sitemap_data_jsonl']
+                        st.session_state.button_enter_url = False
+                        st.experimental_rerun()
             if saved_successfully:
                 # Confirmation message
                 st.success(f"File saved successfully.")
@@ -365,10 +405,14 @@ def main():
             st.write("#")
         else:
             st.warning("Data not extracted")
-            if st.button("clear"):
-                st.session_state.button_enter_url = False
-                st.session_state.extracted_url = False
-                st.experimental_rerun()
+            notextracted_c1,notextracted_c2 = st.columns([0.5,0.5])
+            with notextracted_c1:
+                if st.button("clear"):
+                    st.session_state.button_enter_url = False
+                    st.session_state.extracted_url = False
+                    st.experimental_rerun()
+            with notextracted_c2:
+                print()
             st.write("#")
             st.write("#")
 
